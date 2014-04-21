@@ -32,16 +32,12 @@ class Flickr
     {
         $options = array_merge(
             array(
-                'date' => date('c', strtotime('-1 day')), // default to yesterday
+                'date' => date('Y-m-d', strtotime('-1 day')), // default to yesterday
                 'extras' => 'description,date_taken,owner_name,geo,views,url_sq',
                 'page' => 1,
-                'per_page' => 100
+                'per_page' => 500
             )
         , $options);
-
-        // format date to YYYY-MM-DD 
-        $date = new \DateTime($options['date']);
-        $options['date'] = $date->format('Y-m-d');
 
         $photos = array();
 

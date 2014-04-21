@@ -14,12 +14,13 @@ class ImageRepository
     {
         $options = array_merge(array(
             'db' => 'phosaic',
-            'cache_path' => __DIR__.'/../../../../var/cache/phosaic/images'
+            'cache_path' => '/tmp'
         ), $options);
 
         $this->cache_path = $options['cache_path'];
         $this->collection = $mongodb->selectDatabase($options['db'])->selectCollection('images');
         $this->collection->ensureIndex(array('interestingness_date' => -1));
+        $this->collection->ensureIndex(array('id' => 1), array('dropDups' => true, 'unique' => true));
         $this->client = new Client();
     }
 
@@ -37,22 +38,19 @@ class ImageRepository
         }
     }
 
-    public function hasImages($date = '')
+    public function findOneByDate($date = '')
     {
-        // format date to YYYY-MM-DD
-        $date = new \DateTime($date);
-        $date_formatted = $date->format('Y-m-d');
-
-        return null !== $this->collection->findOne(array('interestingness_date' => $date_formatted));
+        return null !== $this->collection->findOne(array('interestingness_date' => $date));
     }
 
-    public function getImages($date = '')
+    public function findByDate($date = '')
     {
-        // format date to YYYY-MM-DD
-        $date = new \DateTime($date);
-        $date_formatted = $date->format('Y-m-d');
+        return $this->collection->find(array('interestingness_date' => $date));
+    }
 
-        return $this->collection->find(array('interestingness_date' => $date_formatted));
+    public function findByDateRange($start_date = '', $end_date = '')
+    {
+        return $this->collection->find(array('interestingness_date' => array('$gte' => $start_date, '$lte' => $end_date)));
     }
 
     public function generateFilePath($photo_id)
@@ -64,7 +62,7 @@ class ImageRepository
         return $path;
     }
 
-    private function writeToCache($url, $path)
+    private function writeToCache($file, $path)
     {
         $path_parts = pathinfo($path);
         $dir = $path_parts['dirname'];
@@ -78,13 +76,19 @@ class ImageRepository
             throw new \RuntimeException(sprintf("Unable to write in the cache directory (%s).", $dir));
         }
 
-        if (!is_file($path)) {
+        if (filter_var($file, FILTER_VALIDATE_URL)) {
             try {
-                $response = $this->client->get($url, array(), array('save_to' => $path))->send();
+                $response = $this->client->get($file, array(), array('save_to' => $path))->send();
             }
             catch (\Exception $e) {
-                throw new \RuntimeException(sprintf("Unable to download file (%s) when generating the cache.", $url));
+                throw new \RuntimeException(sprintf("Unable to download file (%s) when generating the cache.", $file));
             }
+        }
+        elseif (is_uploaded_file($file)) {
+            move_uploaded_file($file, $path);
+        }
+        else {
+            copy($file, $path);
         }
 
         return is_file($path);

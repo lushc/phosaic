@@ -16,6 +16,7 @@ use Igorw\Silex\ConfigServiceProvider;
 use Saxulum\DoctrineMongoDb\Silex\Provider\DoctrineMongoDbProvider;
 use Lushc\Phosaic\Builder\MetapixelBuilder;
 use Lushc\Phosaic\Repository\ImageRepository;
+use Lushc\Phosaic\Repository\MosaicRepository;
 use Lushc\Phosaic\Service\Flickr;
 
 $env = getenv('APP_ENV') ?: 'prod';
@@ -62,12 +63,21 @@ $app['flickr'] = $app->share(function ($app) {
 
 $app['repository.images'] = $app->share(function ($app) {
     return new ImageRepository($app['mongodb'], array(
+        'db' => $app['config']['mongodb']['db'],
+        'cache_path' => __DIR__.'/../var/cache/phosaic/images'
+    ));
+});
+
+$app['repository.mosaics'] = $app->share(function ($app) {
+    return new MosaicRepository($app['mongodb'], array(
         'db' => $app['config']['mongodb']['db']
     ));
 });
 
 $app['builder.metapixel'] = $app->share(function ($app) {
-    return new MetapixelBuilder();
+    return new MetapixelBuilder($app['repository.mosaics'], array(
+        'library_path' => __DIR__.'/../var/cache/phosaic/metapixel'
+    ));
 });
 
 // Middleware to handle JSON request bodies.

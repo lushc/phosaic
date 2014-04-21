@@ -5,5 +5,11 @@
 {% endblock %}
 
 {% block content %}
-
+<form action="{{ path('api_create_mosaic') }}" method="post" enctype="multipart/form-data">
+    <fieldset>
+        <input type="text" name="date" value="{{ 'now'|date_modify('-1 day')|date('Y-m-d') }}" />
+        <input type="file" name="upload" />
+    </fieldset>
+    <input type="submit" />
+</form>
 {% endblock %}
