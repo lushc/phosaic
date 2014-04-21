@@ -1,0 +1,12 @@
+debug: false
+config:
+    flickr:
+        api_key: ""
+        api_secret: ""
+        oauth_token: ""
+        oauth_secret: ""
+    mongodb:
+        server: ""
+        username: ""
+        password: ""
+        db: ""
