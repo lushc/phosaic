@@ -5,11 +5,18 @@
 {% endblock %}
 
 {% block content %}
-<form action="{{ path('api_create_mosaic') }}" method="post" enctype="multipart/form-data">
+
+<h1 class="cover-heading">Create your mosiac.</h1>
+
+<form class="form-horizontal" action="{{ path('api_create_mosaic') }}" method="post" enctype="multipart/form-data">
     <fieldset>
-        <input type="text" name="date" value="{{ 'now'|date_modify('-1 day')|date('Y-m-d') }}" />
-        <input type="file" name="upload" />
+        <label for="date">Flickr date:</label>
+        <input type="text" id="date" name="date" value="{{ 'now'|date_modify('-1 day')|date('Y-m-d') }}" />
+        <br />
+        <label for="upload">File:</label>
+        <input type="file" id="upload" name="upload" />
+        <button type="submit" class="btn btn-lg btn-default">Submit</button>
     </fieldset>
-    <input type="submit" />
 </form>
+
 {% endblock %}
