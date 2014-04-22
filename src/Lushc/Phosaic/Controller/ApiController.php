@@ -30,21 +30,35 @@ class ApiController
 
         $uploaded_file = $file->move($upload_dir, $upload_filename);
 
-        $date = $request->request->get('date');
-        if (empty($date)) {
+        // dates are provided as comma-delimited values
+        $dates = explode(',', $request->request->get('dates'));
+
+        if (empty($dates)) {
             // default to yesterday
-            $date = date('c', strtotime('-1 day'));
-        }
-        $date_formatted = date('Y-m-d', strtotime($date));
-
-        if (!$app['repository.images']->findOneByDate($date_formatted)) {
-
-            $photos = $app['flickr']->getInterestingPhotos(array('date' => $date_formatted));
-            $app['repository.images']->populate($photos);
+            $dates[] = date('Y-m-d', strtotime('-1 day'));
         }
 
-        $app['builder.metapixel']->prepareLibrary($date_formatted, $app['repository.images']->findByDate($date_formatted));
-        $mosaic_id = $app['builder.metapixel']->generateMosaic($uploaded_file->getRealpath(), array($date_formatted));
+        foreach ($dates as $i => $date) {
+
+            // format to YYYY-MM-DD
+            $date_formatted = date('Y-m-d', strtotime($date));
+
+            if (!$app['repository.images']->findOneByDate($date_formatted)) {
+
+                // get and cache images for this particular date
+                $photos = $app['flickr']->getInterestingPhotos(array('date' => $date_formatted));
+                $app['repository.images']->populate($photos);
+            }
+
+            // make sure the metapixel library is prepared for the day's images
+            $app['builder.metapixel']->prepareLibrary($date_formatted, $app['repository.images']->findByDate($date_formatted));
+
+            // now use the dates array as a list of libraries for metapixel to use
+            $dates[$i] = $date_formatted;
+        }
+
+        // build the mosaic using the request date libraries
+        $mosaic_id = $app['builder.metapixel']->generateMosaic($uploaded_file->getRealpath(), $dates);
         
         return $app->json(array(
             'status' => 'success',

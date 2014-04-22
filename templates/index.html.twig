@@ -10,8 +10,8 @@
 
 <form class="form-horizontal" action="{{ path('api_create_mosaic') }}" method="post" enctype="multipart/form-data">
     <fieldset>
-        <label for="date">Flickr date:</label>
-        <input type="text" id="date" name="date" value="{{ 'now'|date_modify('-1 day')|date('Y-m-d') }}" />
+        <label for="dates">Flickr dates:</label>
+        <input type="text" id="dates" name="dates" value="{{ 'now'|date_modify('-1 day')|date('Y-m-d') }}" />
         <br />
         <label for="upload">File:</label>
         <input type="file" id="upload" name="upload" />
