@@ -29,6 +29,11 @@ $app->register(new TwigServiceProvider(), array(
     'twig.path' => array(__DIR__.'/../templates'),
     'twig.options' => array('cache' => __DIR__.'/../var/cache/twig')
 ));
+$app->register(new MonologServiceProvider(), array(
+    'monolog.logfile' => __DIR__."/../var/logs/$env.log",
+    'monolog.level' => $env === 'dev' ? 'DEBUG' : 'WARNING',
+    'monolog.name' => 'phosaic'
+));
 $app->register(new ConfigServiceProvider(__DIR__."/../config/$env.yml"));
 $app->register(new DoctrineMongoDbProvider(), array(
     'mongodb.options' => array(
@@ -42,9 +47,6 @@ $app->register(new DoctrineMongoDbProvider(), array(
 ));
 
 if ($app['debug']) {
-    $app->register(new MonologServiceProvider(), array(
-        'monolog.logfile' => __DIR__.'/../var/logs/silex_dev.log',
-    ));
     $app->register($p = new WebProfilerServiceProvider(), array(
         'profiler.cache_dir' => __DIR__.'/../var/cache/profiler',
     ));
