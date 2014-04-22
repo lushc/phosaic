@@ -44,6 +44,7 @@ class MetapixelBuilder
         $output_path = $path_parts['dirname'] . '/tmp_metapixel_' . uniqid() . '.png';
 
         $process = new Process("metapixel $opts --metapixel $input_path $output_path --scale=$this->scale");
+        $process->setTimeout(null);
         $process->run();
         if (!$process->isSuccessful()) {
             throw new \RuntimeException($process->getErrorOutput());
