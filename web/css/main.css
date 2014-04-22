@@ -2,6 +2,25 @@
  * Globals
  */
 
+/* Fonts */
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('../fonts/ComicNeue-Regular.eot'); /* IE9 Compat Modes */
+  src: url('../fonts/ComicNeue-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../fonts/ComicNeue-Regular.woff') format('woff'), /* Modern Browsers */
+       url('../fonts/ComicNeue-Regular.ttf')  format('truetype'); /* Safari, Android, iOS */
+  font-weight: 300;
+}
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('../fonts/ComicNeue-Bold-Oblique.eot'); /* IE9 Compat Modes */
+  src: url('../fonts/ComicNeue-Bold-Oblique.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../fonts/ComicNeue-Bold-Oblique.woff') format('woff'), /* Modern Browsers */
+       url('../fonts/ComicNeue-Bold-Oblique.ttf')  format('truetype'); /* Safari, Android, iOS */
+  font-weight: 700;
+  font-style: oblique;
+}
+
 /* Links */
 a,
 a:focus,
@@ -30,6 +49,12 @@ body {
   background-color: #333;
 }
 body {
+  font-family: 'Comic Neue', sans-serif;
+  font-weight: 300;
+  /* Enable a font's kerning: http://stackoverflow.com/questions/15160897/font-feature-settings-what-is-the-correct-syntax */
+  font-feature-settings: "kern";
+  -moz-font-feature-settings: "kern";
+  -webkit-font-feature-settings: "kern";
   color: #fff;
   text-align: center;
   text-shadow: 0 1px 3px rgba(0,0,0,.5);
@@ -67,6 +92,8 @@ input[type="text"] {
 .masthead-brand {
   margin-top: 10px;
   margin-bottom: 10px;
+  font-weight: 700;
+  font-style: oblique;
 }
 
 .masthead-nav > li {
