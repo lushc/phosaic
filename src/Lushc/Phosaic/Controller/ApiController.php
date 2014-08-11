@@ -43,7 +43,7 @@ class ApiController
             // format to YYYY-MM-DD
             $date_formatted = date('Y-m-d', strtotime($date));
 
-            if (!$app['repository.images']->findOneByDate($date_formatted)) {
+            if (!$app['repository.images']->hasOneByDate($date_formatted)) {
 
                 // get and cache images for this particular date
                 $photos = $app['flickr']->getInterestingPhotos(array('date' => $date_formatted));

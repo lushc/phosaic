@@ -38,7 +38,7 @@ class ImageRepository
         }
     }
 
-    public function findOneByDate($date = '')
+    public function hasOneByDate($date = '')
     {
         return null !== $this->collection->findOne(array('interestingness_date' => $date));
     }
